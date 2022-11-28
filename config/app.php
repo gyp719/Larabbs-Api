@@ -194,6 +194,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        /***************************新增************************/
+        App\Providers\EasySmsServiceProvider::class, // EasySms 短信
 
     ],
 
