@@ -128,9 +128,25 @@ return [
     'uploaded'             => ':attribute 上传失败。',
     'url'                  => ':attribute 格式不正确。',
     'uuid'                 => ':attribute 必须是有效的 UUID。',
+    'phone'                => ':attribute 格式不正确。',
     'custom'               => [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Custom Validation Attributes
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines are used to swap our attribute placeholder
+    | with something more reader friendly such as "E-Mail Address" instead
+    | of "email". This simply helps us make our message more expressive.
+    |
+    */
+
+    'attributes' => [
+        'phone' => '电话',
     ],
 ];
