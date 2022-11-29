@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Api\VerificationCodeRequest;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -12,8 +13,20 @@ class VerificationCodesController extends Controller
 {
     public function store(VerificationCodeRequest $request, EasySms $easySms)
     {
-        // 格式化手机号 去除 +86 去除空格
-        $phone = ltrim(phone($request->input('phone'), 'CN', 'E164'), '+86');
+        $captchaCacheKey = $request->input('captcha_key');
+        $captchaData     = Cache::get($captchaCacheKey);
+
+        if (!$captchaData) {
+            abort(403, '图片验证码已失效');
+        }
+
+        if (!hash_equals(strtolower($captchaData['code']), strtolower($request->input('captcha_code')))) {
+            // 验证错误就清除缓存
+            Cache::forget($captchaCacheKey);
+            throw new AuthenticationException('验证码错误');
+        }
+
+        $phone = $captchaData['phone'];
 
         if (!app()->environment('production')) {
             $code = '1234';
@@ -34,11 +47,12 @@ class VerificationCodesController extends Controller
             }
         }
 
-        $key       = Str::random(15);
-        $cacheKey  = 'verificationCode_' . $key;
+        $cacheKey  = 'verificationCode_' . Str::random(15);
         $expiredAt = now()->addMinutes(5);
         // 缓存验证码 5 分钟过期。
         Cache::put($cacheKey, ['phone' => $phone, 'code' => $code], $expiredAt);
+        // 清除图片验证码缓存
+        Cache::forget($captchaCacheKey);
 
         return response()->json([
             'key'        => $cacheKey,
