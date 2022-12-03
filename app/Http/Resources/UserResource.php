@@ -6,8 +6,26 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
 {
-    public function toArray($request)
+    protected bool $showSensitiveFields = false;
+
+    public function toArray($request): array
     {
-        return parent::toArray($request);
+        if (!$this->showSensitiveFields) {
+            $this->resource->makeHidden(['phone', 'email']);
+        }
+
+        $data = parent::toArray($request);
+
+        $data['bound_phone']  = (bool)$this->resource->phone;
+        $data['bound_wechat'] = $this->resource->weixin_unionid || $this->resource->weixin_openid;
+
+        return $data;
+    }
+
+    public function showSensitiveFields(): static
+    {
+        $this->showSensitiveFields = true;
+
+        return $this;
     }
 }

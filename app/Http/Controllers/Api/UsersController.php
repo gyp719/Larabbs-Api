@@ -25,7 +25,7 @@ class UsersController extends Controller
             throw new AuthenticationException('验证码错误');
         }
 
-        $user = User::create([
+        $user = User::query()->create([
             'name'     => $request->input('name'),
             'phone'    => $verifyData['phone'],
             'password' => $request->input('password'),
@@ -34,6 +34,18 @@ class UsersController extends Controller
         // 清除验证码缓存
         Cache::forget($request->input('verification_key'));
 
+        return (new UserResource($user))->showSensitiveFields();
+
+    }
+
+    public function show(User $user, Request $request)
+    {
         return new UserResource($user);
+    }
+
+    public function me(Request $request)
+    {
+        return (new UserResource($request->user()))->showSensitiveFields();
+
     }
 }
