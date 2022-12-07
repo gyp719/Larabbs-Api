@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\RepliesController;
 use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\AuthorizationsController;
 use App\Http\Controllers\Api\ImagesController;
+use App\Http\Controllers\Api\NotificationsController;
 
 Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::middleware('throttle:' . config('api.rate_limits.sign'))->group(function () {
@@ -56,6 +57,8 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             Route::apiResource('topics', TopicsController::class)->only(['store', 'update', 'destroy']);
             // 发布, 删除回复
             Route::apiResource('topics.replies', RepliesController::class)->only(['store', 'destroy']);
+            // 通知列表
+            Route::apiResource('notifications', NotificationsController::class)->only(['index']);
         });
     });
 
