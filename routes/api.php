@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\CaptchasController;
 use App\Http\Controllers\Api\VerificationCodesController;
 use App\Http\Controllers\Api\CategoriesController;
 use App\Http\Controllers\Api\TopicsController;
+use App\Http\Controllers\Api\RepliesController;
 use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\AuthorizationsController;
 use App\Http\Controllers\Api\ImagesController;
@@ -49,6 +50,8 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             Route::post('images', [ImagesController::class, 'store'])->name('images.store');
             // 发布，修改，删除话题
             Route::apiResource('topics', TopicsController::class)->only(['store', 'update', 'destroy']);
+            // 发布, 删除回复
+            Route::apiResource('topics.replies', RepliesController::class)->only(['store', 'destroy']);
         });
     });
 
