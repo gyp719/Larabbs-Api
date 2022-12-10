@@ -196,6 +196,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         /***************************新增************************/
         App\Providers\EasySmsServiceProvider::class, // EasySms 短信
+        App\Providers\JpushServiceProvider::class, //  Jpush
 
     ],
 
