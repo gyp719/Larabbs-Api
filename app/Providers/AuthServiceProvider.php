@@ -7,6 +7,7 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Horizon\Horizon;
+use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -28,6 +29,11 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // access_token 过期时间
+        Passport::tokensExpireIn(now()->addDays(15));
+        // refreshTokens 过期时间
+        Passport::refreshTokensExpireIn(now()->addDays(30));
+
         $this->registerPolicies();
         // 修改策略自动发现的逻辑
         Gate::guessPolicyNamesUsing(function ($modelClass) {

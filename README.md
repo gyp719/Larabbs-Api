@@ -31,3 +31,9 @@ API 基础测试
 
 启动访问  
 `http://larabbs-api.test`
+
+Passport
+`
+Client ID: 1
+Client secret: EvtbjguJg9B4PQI8VuopNSgS1eQsH0lKAt1Khk1h
+`
