@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller as BaseController;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Http\Request;
 
 class Controller extends BaseController
 {
-    //
+    public function errorResponse($statusCode, $message=null, $code=0)
+    {
+        throw new HttpException($statusCode, $message, null, [], $code);
+    }
 }

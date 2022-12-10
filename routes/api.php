@@ -14,7 +14,7 @@ use App\Http\Controllers\Api\NotificationsController;
 use App\Http\Controllers\Api\PermissionsController;
 use App\Http\Controllers\Api\LinksController;
 
-Route::prefix('v1')->name('api.v1.')->group(function () {
+Route::prefix('v1')->middleware('change-locale')->name('api.v1.')->group(function () {
     Route::middleware('throttle:' . config('api.rate_limits.sign'))->group(function () {
         // 图片验证码
         Route::post('captchas', [CaptchasController::class, 'store'])->name('captchas.store');
