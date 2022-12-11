@@ -22,10 +22,7 @@ Route::prefix('v1')->middleware('change-locale')->name('api.v1.')->group(functio
         Route::post('verificationCodes', [VerificationCodesController::class, 'store'])->name('verificationCodes.store');
         // 用户注册
         Route::post('users', [UsersController::class, 'store'])->name('users.store');
-        // 第三方登录
-        Route::post('socials/{social_type}/authorizations', [AuthorizationsController::class, 'socialStore'])
-            ->where('social_type', 'wechat')->name('socials.authorizations.store');
-        // 登录
+        // 登录、第三方登录
         Route::post('authorizations', [AuthorizationsController::class, 'store'])->name('authorizations.store');
         // 刷新token
         Route::put('authorizations/current', [AuthorizationsController::class, 'update'])->name('authorizations.update');
