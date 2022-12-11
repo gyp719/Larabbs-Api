@@ -8,9 +8,11 @@ use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Passport\Http\Controllers\AccessTokenController;
 use Overtrue\LaravelSocialite\Socialite;
+use Psr\Http\Message\ServerRequestInterface;
 
-class AuthorizationsController extends Controller
+class AuthorizationsController extends AccessTokenController
 {
     public function socialStore($type, SocialAuthorizationRequest $request)
     {
@@ -62,33 +64,24 @@ class AuthorizationsController extends Controller
         return $this->respondWithToken($token)->setStatusCode(201);
     }
 
-    public function store(AuthorizationRequest $request)
+    public function store(ServerRequestInterface $request)
     {
-        $username = $request->input('username');
-
-        filter_var($username, FILTER_VALIDATE_EMAIL) ?
-            $credentials['email'] = $username :
-            $credentials['phone'] = $username;
-
-        $credentials['password'] = $request->input('password');
-
-        if (!$token = Auth::guard('api')->attempt($credentials)) {
-            throw new AuthenticationException(trans('auth.failed'));
-        }
-
-        return $this->respondWithToken($token)->setStatusCode(201);
+        return $this->issueToken($request)->setStatusCode(201);
     }
 
-    public function update()
+    public function update(ServerRequestInterface $request)
     {
-        $token = auth('api')->refresh();
-        return $this->respondWithToken($token);
+        return $this->issueToken($request);
     }
 
     public function destroy()
     {
-        auth('api')->logout();
-        return response(null, 204);
+        if (auth('api')->check()) {
+            auth('api')->user()->token()->revoke();
+            return response(null, 204);
+        } else {
+            throw new AuthenticationException('The token is invalid.');
+        }
     }
 
     protected function respondWithToken($token)
